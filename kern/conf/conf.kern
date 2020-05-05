@@ -456,3 +456,13 @@ optfile hello main/hello.c
 defoption syscall
 optfile syscall syscall/file_syscalls.c
 optfile syscall syscall/proc_syscalls.c
+
+
+############################################
+#                                          #
+#                LOCK                   #
+#                                          #
+############################################
+defoption lock_sem
+defoption lock_wchan
+defoption cv
