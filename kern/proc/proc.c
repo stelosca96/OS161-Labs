@@ -49,11 +49,24 @@
 #include <addrspace.h>
 #include <vnode.h>
 #include "synch.h"
+#include <limits.h>
+#include <lib.h>
 /*
  * The process for the kernel; this holds all the kernel-only threads.
  */
 struct proc *kproc;
 
+
+#if OPT_PID
+struct proc* pid_table[PID_MAX];
+
+void init_pid_table(){
+	for (size_t i = 0; i < PID_MAX; i++)
+	{
+		pid_table[i] = NULL;
+	}
+}
+#endif
 /*
  * Create a proc structure.
  */
@@ -85,6 +98,15 @@ proc_create(const char *name)
 	#if OPT_PROC_WAIT
 	proc->p_sem = sem_create(name, 0);
 	KASSERT(proc->p_sem != NULL);
+	#endif
+
+	#if OPT_PID
+	int i=PID_MIN;
+	while (pid_table[i]!=NULL && i<PID_MAX)
+		i++;
+	proc->p_pid = i;
+	pid_table[proc->p_pid] = proc;
+	kprintf("Proces PID: %d\n", proc->p_pid);
 	#endif
 
 	return proc;
@@ -126,6 +148,11 @@ proc_destroy(struct proc *proc)
 	#if OPT_PROC_WAIT
 	KASSERT(proc->p_sem != NULL);
 	sem_destroy(proc->p_sem);
+	#endif
+
+
+	#if OPT_PID
+	pid_table[proc->p_pid] = NULL;
 	#endif
 
 	/* VM fields */
@@ -193,6 +220,9 @@ proc_bootstrap(void)
 	if (kproc == NULL) {
 		panic("proc_create for kproc failed\n");
 	}
+	#if OPT_PID
+		init_pid_table();
+	#endif
 }
 
 /*
@@ -330,6 +360,7 @@ proc_setas(struct addrspace *newas)
 	return oldas;
 }
 
+#if OPT_PROC_WAIT
 int proc_wait(struct proc *proc){
 	int exit_code;
 	P(proc->p_sem);
@@ -337,3 +368,11 @@ int proc_wait(struct proc *proc){
 	proc_destroy(proc);
 	return exit_code;
 }
+#endif
+
+#if OPT_PID
+int waitpid(pid_t pid){
+	struct proc* proc = pid_table[pid];
+	return proc_wait(proc);
+}
+#endif

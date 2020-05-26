@@ -36,13 +36,18 @@
 
 /* Get the limit values, which are exported to userland with private names. */
 #include <kern/limits.h>
+#include "opt-pid.h"
 
 /* Provide the real names */
 #define NAME_MAX        __NAME_MAX
 #define PATH_MAX        __PATH_MAX
 #define ARG_MAX         __ARG_MAX
 #define PID_MIN         __PID_MIN
+#if OPT_PID
+#define PID_MAX         100
+#else
 #define PID_MAX         __PID_MAX
+#endif
 #define PIPE_BUF        __PIPE_BUF
 #define NGROUPS_MAX     __NGROUPS_MAX
 #define LOGIN_NAME_MAX  __LOGIN_NAME_MAX
