@@ -32,5 +32,5 @@ options sfs			# Always use the file system
 options dumbvm			# Chewing gum and baling wire.
 
 options hello
-
+options syscall
 options lock_wchan

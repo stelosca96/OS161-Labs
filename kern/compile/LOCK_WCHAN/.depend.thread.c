@@ -9,6 +9,6 @@ thread.o: ../../thread/thread.c ../../include/types.h \
  ../../include/setjmp.h includelinks/kern/machine/setjmp.h \
  ../../include/threadprivate.h ../../include/proc.h \
  ../../include/current.h includelinks/machine/current.h \
- ../../include/synch.h opt-lock_sem.h ../../include/addrspace.h \
- ../../include/vm.h opt-dumbvm.h ../../include/mainbus.h \
- ../../include/vnode.h
+ ../../include/synch.h opt-lock_sem.h opt-lock_wchan.h opt-cv.h \
+ ../../include/addrspace.h ../../include/vm.h opt-dumbvm.h \
+ ../../include/mainbus.h ../../include/vnode.h

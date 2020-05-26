@@ -7,10 +7,22 @@
 #include <proc.h>
 #include <thread.h>
 #include <addrspace.h>
+#include <current.h>
+#include "synch.h"
 
 void sys__exit(int status){
-    struct addrspace *as = proc_getas();
     (void) status;
+    
+    #if OPT_PROC_WAIT
+	struct proc *proc = curproc;
+	struct thread *thread = curthread;
+    proc->exit_code = status;
+    proc_remthread(thread);
+    V(proc->p_sem);
+    #else
+    struct addrspace *as = proc_getas();
     as_destroy(as);
+	#endif
+
     thread_exit();
 }

@@ -33,6 +33,8 @@ options dumbvm			# Chewing gum and baling wire.
 
 options hello
 
+options hello
+options syscall
 options lock_wchan
 options cv
 
